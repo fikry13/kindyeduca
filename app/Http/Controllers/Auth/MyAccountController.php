@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Http\Requests\ChangeAvatarRequest;
 use App\Models\Grade;
 use App\Models\Subject;
 use Cornford\Googlmapper\Facades\MapperFacade as Mapper;
@@ -11,6 +12,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\AccountInfoRequest;
 use App\Http\Requests\ChangePasswordRequest;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 class MyAccountController extends Controller
 {
@@ -59,6 +61,19 @@ class MyAccountController extends Controller
         return view('backpack::auth.account.update_info', $this->data);
     }
 
+    /**
+     * Show the user a form to change his personal information.
+     */
+    public function getAvatarForm()
+    {
+        $user = $this->guard()->user();
+
+        $this->data['title'] = trans('backpack::base.my_account');
+        $this->data['user'] = $user;
+
+        return view('backpack::auth.account.update_avatar', $this->data);
+    }
+
 
     public function getLocation(Request $request)
     {
@@ -70,6 +85,45 @@ class MyAccountController extends Controller
         ];
 
         return response()->json($data);
+    }
+
+    public function postAvatarForm(ChangeAvatarRequest $request)
+    {
+        $user = $this->guard()->user();
+
+        Storage::disk('avatar')->delete($user->id."/".$user->avatar);
+
+        $explode = explode(',', $request->avatar);
+        $format = str_replace(
+            [
+                'data:image/',
+                ';',
+                'base64',
+            ],
+            [
+                '', '', '',
+            ],
+            $explode[0]
+        );
+
+        $path = now()->timestamp."-".$user->id.".".$format;
+
+        $user->avatar = $path;
+        $user->save();
+
+        $request->merge(['avatar' => $path]);
+
+        $result = $user->update($request->except(['_token']));
+
+        Storage::disk('avatar')->put($user->id."/".$path, base64_decode($explode[1]));
+
+        if ($result) {
+            Alert::success(trans('backpack::base.account_updated'))->flash();
+        } else {
+            Alert::error(trans('backpack::base.error_saving'))->flash();
+        }
+
+        return redirect()->back();
     }
 
         /**

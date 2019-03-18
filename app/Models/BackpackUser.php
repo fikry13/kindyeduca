@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\User;
 use Backpack\Base\app\Notifications\ResetPasswordNotification as ResetPasswordNotification;
+use Illuminate\Support\Facades\Storage;
 use Tightenco\Parental\HasParentModel;
 
 class BackpackUser extends User
@@ -32,5 +33,10 @@ class BackpackUser extends User
     public function getEmailForPasswordReset()
     {
         return $this->email;
+    }
+
+    public function getAvatarUrlAttribute()
+    {
+        return Storage::disk('avatar')->url($this->id."/".$this->avatar);
     }
 }

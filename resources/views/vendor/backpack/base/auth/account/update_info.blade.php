@@ -68,16 +68,6 @@
 
                             <div class="form-group">
                                 @php
-                                    $label = 'Avatar';
-                                    $field = 'avatar';
-                                @endphp
-                                <label class="required">{{ $label }}</label>
-                                <button type="submit" class="btn btn-success form-control"><span class="ladda-label"><i
-                                                class="fa fa-save"></i>Upload New Avatar</span></button>
-                            </div>
-
-                            <div class="form-group">
-                                @php
                                     $label = trans('backpack::base.name');
                                     $field = 'name';
                                 @endphp
@@ -250,10 +240,76 @@
 
 @section('before_styles')
     <link rel="stylesheet" href="{{ asset('vendor/adminlte/') }}\bower_components\select2\dist\css\select2.min.css">
+    <link rel="stylesheet" href="{{ asset('vendor/croppie/') }}\croppie.css" />
 @endsection
 
 @section('after_scripts')
     <script src="{{ asset('vendor/adminlte') }}\bower_components\select2\dist\js\select2.full.min.js"></script>
+    <script src="{{ asset('vendor/croppie/') }}\croppie.min.js"></script>
+    <!--Croppie-->
+    <script type="text/javascript">
+        function readFile(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    $('.upload-image').addClass('ready');
+                    $uploadCrop.croppie('bind', {
+                        url: e.target.result
+                    }).then(function(){
+                        console.log('jQuery bind complete');
+                    });
+
+                }
+
+                reader.readAsDataURL(input.files[0]);
+            }
+            else {
+                swal("Sorry - you're browser doesn't support the FileReader API");
+            }
+        }
+        $uploadCrop = $('#upload-image').croppie({
+            viewport: {
+                width: 200,
+                height: 200,
+                type: 'circle'
+            },
+            boundary: {
+                width: 300,
+                height: 300
+            },
+            enableExif: true
+        });
+
+        $('#upload').on('change', function () { readFile(this); });
+        $('.upload-result').on('click', function (ev) {
+            $uploadCrop.croppie('result', {
+                type: 'canvas',
+                size: 'viewport'
+            }).then(function (resp) {
+                popupResult({
+                    src: resp
+                });
+            });
+        });
+
+        /*var myCroppie = $('#image-upload').croppie({
+            enableExif: true,
+            viewport: {
+                width: 200,
+                height: 200,
+                type: 'circle'
+            },
+            boundary: {
+                width: 300,
+                height: 300
+            }
+        });
+        myCroppie.croppie('bind', {
+            url: 'https://images-na.ssl-images-amazon.com/images/I/51LTQpJLHjL._SX403_BO1,204,203,200_.jpg',
+            points: [77,469,280,739]
+        });*/
+    </script>
     <!--Select2-->
     <script type="text/javascript">
         var skill = {{ $user->skills->pluck('id')->toJson() }};

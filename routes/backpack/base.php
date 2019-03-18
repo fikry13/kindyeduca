@@ -44,6 +44,8 @@ Route::group([
     'prefix'     => config('backpack.base.route_prefix'),
 ], function () {
     Route::get('show-account-info', 'Auth\MyAccountController@getAccountInfo')->name('backpack.account.show');
+    Route::get('edit-profile-picture', 'Auth\MyAccountController@getAvatarForm')->name('backpack.account.avatar');
+    Route::post('edit-profile-picture', 'Auth\MyAccountController@postAvatarForm');
     Route::get('edit-account-info', 'Auth\MyAccountController@getAccountInfoForm')->name('backpack.account.info');
     Route::post('edit-account-info', 'Auth\MyAccountController@postAccountInfoForm');
     Route::post('get-location', 'Auth\MyAccountController@getLocation')->name('get-location');

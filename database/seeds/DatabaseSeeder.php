@@ -3,6 +3,7 @@
 use App\Models\Grade;
 use App\Models\Subject;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Storage;
 use Spatie\Permission\Models\Role;
 use App\User;
 use Faker\Factory as Faker;
@@ -96,6 +97,9 @@ class DatabaseSeeder extends Seeder
         $student->assignRole('student');
         $student->save();
 
+        Storage::disk('public')->deleteDirectory('avatar');
+        Storage::disk('public')->makeDirectory('avatar');
+
         factory(App\User::class, 100)->create();
         $users = \App\Models\BackpackUser::all();
         $subjects = \App\Models\Subject::all();
@@ -108,6 +112,10 @@ class DatabaseSeeder extends Seeder
                 else
                     $user->assignRole('teacher');
             }
+
+            if(!is_dir(storage_path('app/public/avatar/'.$user->id)))
+                Storage::disk('avatar')->makeDirectory($user->id);
+            $user->avatar = Faker::create()->image(storage_path('app/public/avatar/'.$user->id), 300, 300, null, false);
 
             $user->skills()->sync($subjects->random(5));
             $user->save();

@@ -2,7 +2,6 @@
     <div class="box-body box-profile">
         <img class="profile-user-img img-responsive img-circle"
              src="{{ backpack_avatar_url(backpack_auth()->user()) }}">
-        <button type="button" class="btn btn-block btn-default">Default</button>
         <h3 class="profile-username text-center">{{ backpack_auth()->user()->name }}</h3>
     </div>
 
@@ -19,6 +18,12 @@
             class="active"
                 @endif
         ><a href="{{ route('backpack.account.info') }}">{{ trans('backpack::base.update_account_info') }}</a></li>
+
+        <li role="presentation"
+            @if (Request::route()->getName() == 'backpack.account.avatar')
+            class="active"
+                @endif
+        ><a href="{{ route('backpack.account.avatar') }}">Update Profile Picture</a></li>
 
         <li role="presentation"
             @if (Request::route()->getName() == 'backpack.account.password')
