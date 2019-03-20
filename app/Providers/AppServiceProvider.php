@@ -51,6 +51,15 @@ class AppServiceProvider extends ServiceProvider
             return true;
         });
 
+        Blade::if('hasAvatar', function ()
+        {
+            $user = backpack_auth()->user();
+
+            if(is_null($user->avatar))
+                return false;
+            return true;
+        });
+
         Blade::if('completeProfile', function()
         {
             $user = backpack_auth()->user();
