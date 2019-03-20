@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use Backpack\PermissionManager\app\Models\Permission;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
@@ -49,6 +51,30 @@ class AppServiceProvider extends ServiceProvider
             return true;
         });
 
+        Blade::if('completeProfile', function()
+        {
+            $user = backpack_auth()->user();
+
+            if($user->hasRole('student') || $user->hasRole('teacher'))
+            {
+                if(is_null($user->avatar))
+                    return false;
+                if(is_null($user->latitude))
+                    return false;
+                if(is_null($user->longitude))
+                    return false;
+                if(is_null($user->gender))
+                    return false;
+                if(is_null($user->age))
+                    return false;
+                if(is_null($user->phone))
+                    return false;
+                if(is_null($user->address))
+                    return false;
+            }
+
+            return true;
+        });
     }
 
     /**
