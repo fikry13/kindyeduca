@@ -40,22 +40,52 @@ class AccountInfoRequest extends FormRequest
         $isTeacher = $user->hasRole('teacher');
         $isStudent = $user->hasRole('student');
 
-        return [
-            backpack_authentication_column() => [
-                'required',
-                backpack_authentication_column() == 'email' ? 'email' : '',
-                Rule::unique($user->getTable())->ignore($user->getKey(), $user->getKeyName()),
-            ],
-            'name' => 'required',
-            'address' => ($isStudent || $isTeacher)? 'required' : '',
-            'gender' => ($isStudent || $isTeacher)? 'required|in:0,1' : '',
-            'age' => ($isStudent || $isTeacher)? 'required' : '',
-            'phone' => ($isStudent || $isTeacher)? 'required' : '',
-            'latitude' => ($isStudent || $isTeacher)? 'required' : '',
-            'longitude' => ($isStudent || $isTeacher)? 'required' : '',
-            'grade_id' => ($isStudent)? 'required' : '',
-            'skill_id' => ($isTeacher)? 'required' : '',
-            'distance' => ($isTeacher)? 'required' : '',
-        ];
+        if($isTeacher)
+        {
+            return [
+                backpack_authentication_column() => [
+                    'required',
+                    backpack_authentication_column() == 'email' ? 'email' : '',
+                    Rule::unique($user->getTable())->ignore($user->getKey(), $user->getKeyName()),
+                ],
+                'name' => 'required',
+                'address' => 'required',
+                'gender' => 'required|in:0,1',
+                'age' => 'required',
+                'phone' => 'required',
+                'latitude' => 'required',
+                'longitude' => 'required',
+                'skill_id' => 'required',
+            ];
+        }
+        else if($isStudent)
+        {
+            return [
+                backpack_authentication_column() => [
+                    'required',
+                    backpack_authentication_column() == 'email' ? 'email' : '',
+                    Rule::unique($user->getTable())->ignore($user->getKey(), $user->getKeyName()),
+                ],
+                'name' => 'required',
+                'address' => 'required',
+                'gender' => 'required|in:0,1',
+                'age' => 'required',
+                'phone' => 'required',
+                'latitude' => 'required',
+                'longitude' => 'required',
+                'grade_id' => 'required',
+            ];
+        }
+        else
+        {
+            return [
+                backpack_authentication_column() => [
+                    'required',
+                    backpack_authentication_column() == 'email' ? 'email' : '',
+                    Rule::unique($user->getTable())->ignore($user->getKey(), $user->getKeyName()),
+                ],
+                'name' => 'required',
+            ];
+        }
     }
 }

@@ -37,10 +37,10 @@
 
 @section('content')
 <div class="row">
-    <div class="col-md-3">
+    <div class="col-lg-3 col-md-4 col-xs-12">
         @include('backpack::auth.account.sidemenu')
     </div>
-    <div class="col-md-6">
+    <div class="col-lg-6 col-md-8 col-xs-12">
 
         <form class="form" action="{{ route('backpack.account.password') }}" method="post">
 

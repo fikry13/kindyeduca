@@ -19,7 +19,8 @@
         "fideloper/proxy": "^4.0",
         "hootlex/laravel-moderation": "^1.1",
         "laravel/framework": "5.7.*",
-        "laravel/tinker": "^1.0"
+        "laravel/tinker": "^1.0",
+        "spatie/laravel-permission": "^2.37"
     },
     "require-dev": {
         "backpack/generators": "^1.2",

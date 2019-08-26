@@ -34,9 +34,4 @@ class BackpackUser extends User
     {
         return $this->email;
     }
-
-    public function getAvatarUrlAttribute()
-    {
-        return Storage::disk('avatar')->url($this->id."/".$this->avatar);
-    }
 }

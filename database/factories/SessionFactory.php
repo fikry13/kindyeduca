@@ -21,7 +21,7 @@ $factory->define(App\Models\Session::class, function (Faker $faker) {
         'teacher_id'=>$teachers->random(),
         'subject_id'=>$subject->id,
         'gender_preference' => $faker->numberBetween(0,2),
-        'day' => $faker->numberBetween(0,7),
+        'day' => $faker->numberBetween(0,6),
         'time' => $faker->time()
     ];
 });

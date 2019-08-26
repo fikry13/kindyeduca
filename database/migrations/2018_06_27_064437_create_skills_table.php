@@ -19,7 +19,7 @@ class CreateSkillsTable extends Migration
 
             $table->primary(['teacher_id', 'subject_id']);
             $table->foreign('teacher_id')->references('id')->on('users');
-            $table->foreign('subject_id')->references('id')->on('subjects');
+            $table->foreign('subject_id')->references('id')->on('subjects')->onDelete('cascade');;
         });
     }
 

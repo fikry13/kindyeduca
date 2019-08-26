@@ -37,10 +37,10 @@
 
 @section('content')
     <div class="row">
-        <div class="col-md-3">
+        <div class="col-lg-3 col-md-6 col-xs-12">
             @include('backpack::auth.account.sidemenu')
         </div>
-        <div class="col-md-6">
+        <div class="col-lg-6 col-md-8 col-xs-12">
 
             <form class="form" action="{{ route('backpack.account.avatar') }}" method="post" id="update-avatar">
 
@@ -68,7 +68,7 @@
 
                         <div class="form-group">
                             @php
-                                $label = 'Profile Picture';
+                                $label = 'Foto Profil';
                                 $field = 'avatar';
                             @endphp
                             <label class="required">{{ $label }}</label>
@@ -76,14 +76,14 @@
                         </div>
 
                         <div class="form-group">
-                            <input type="file" id="upload" value="Choose a file" accept="image/*">
+                            <input type="file" id="upload" value="Pilih Foto" accept="image/*">
                         </div>
 
                         <div class="form-group m-b-0">
                             <input required class="form-control" type="hidden" id="avatar-upload" name="{{ $field }}"
                                    value="{{ old($field) ? old($field) : $user->$field }}">
                             <button type="button" type="submit" id="upload-result" class="btn btn-success form-control">
-                                <i class="fa fa-save"></i> Upload New Avatar
+                                <i class="fa fa-save"></i> Upload Foto Baru
                             </button>
                         </div>
 

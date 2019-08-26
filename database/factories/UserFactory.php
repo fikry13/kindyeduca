@@ -29,7 +29,6 @@ $factory->define(App\User::class, function (Faker $faker) {
         'age' => $faker->randomNumber(2),
         'phone' => $faker->phoneNumber,
         'address' => $faker->address,
-        'description' => $faker->realText(100),
-        'distance' => $faker->randomNumber(3),
+        'description' => $faker->realText(100)
     ];
 });

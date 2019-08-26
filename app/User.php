@@ -6,10 +6,11 @@ use App\Models\Grade;
 use App\Models\Rate;
 use App\Models\Session;
 use App\Models\Subject;
+use App\Models\TeacherPreference;
 use Backpack\CRUD\CrudTrait;
+use Illuminate\Support\Facades\Storage;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
@@ -24,7 +25,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password', 'latitude', 'longitude', 'gender', 'age', 'phone', 'address', 'description', 'distance', 'grade_id'
+        'name', 'email', 'password', 'latitude', 'longitude', 'gender', 'age', 'phone', 'address', 'description', 'grade_id', 'verified'
     ];
 
     /**
@@ -38,7 +39,7 @@ class User extends Authenticatable
 
     public function joinedSessions()
     {
-        return $this->hasMany(Session::class, 'user_id');
+        return $this->hasMany(Session::class, 'student_id');
     }
 
     public function teachingSessions()
@@ -64,5 +65,31 @@ class User extends Authenticatable
     public function skills()
     {
         return $this->belongsToMany(Subject::class, 'skills', 'teacher_id', 'subject_id');
+    }
+
+    public function getAvatarUrlAttribute()
+    {
+        $str = $this->avatar;
+        if(!isset($str) || trim($str) === '')
+            return url('/img/default-avatar.png');
+        else
+            return Storage::disk('avatar')->url($this->id."/".$this->avatar);
+    }
+
+    public function preference()
+    {
+        return $this->hasOne(TeacherPreference::class, 'teacher_id', 'id');
+    }
+
+    public function verify()
+    {
+        $this->verified = 1;
+        $this->save();
+    }
+
+    public function unverify()
+    {
+        $this->verified = 0;
+        $this->save();
     }
 }

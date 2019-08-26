@@ -44,7 +44,15 @@ class DatabaseSeeder extends Seeder
 
         Grade::create(['school_id' => $lain->id, 'grade'=> 'Lain-lain']);
 
-        $subjects = factory(Subject::class, 25)->create();
+        //$subjects = factory(Subject::class, 25)->create();
+
+        Subject::create(['name' => 'Matematika', 'color' => '#f5bf42']);
+        Subject::create(['name' => 'Kimia', 'color' => '#c533ff']);
+        Subject::create(['name' => 'Fisika', 'color' => '#0579f5']);
+        Subject::create(['name' => 'Biologi', 'color' => '#47b329']);
+        Subject::create(['name' => 'IPA', 'color' => '#7d0000']);
+
+        $subjects = Subject::all();
 
         $grades = \App\Models\Grade::all();
 
@@ -57,7 +65,8 @@ class DatabaseSeeder extends Seeder
             [
                 "name" => "Fikry Abdullah Aziz",
                 "email" => "fikry13@gmail.com",
-                "password" => bcrypt('13121994')
+                "password" => bcrypt('13121994'),
+                "verified" => 1
             ]
         );
         $admin->assignRole('admin');
@@ -67,7 +76,8 @@ class DatabaseSeeder extends Seeder
             [
                 "name" => "Admin",
                 "email" => "admin@kindyeduca.net",
-                "password" => bcrypt('k1ndyEduc4')
+                "password" => bcrypt('k1ndyEduc4'),
+                "verified" => 1
             ]
         );
         $owner->assignRole('owner');
@@ -80,18 +90,22 @@ class DatabaseSeeder extends Seeder
                 "name" => "Teacher",
                 "email" => "teacher@kindyeduca.net",
                 "password" => bcrypt('teacher'),
-                "grade_id" => $grades->random()
+                "grade_id" => $grades->random(),
+                "verified" => 0
             ]
         );
         $teacher->assignRole('teacher');
         $teacher->save();
+
+        $preference = \App\Models\TeacherPreference::firstOrCreate(['teacher_id' => $teacher->id]);
 
         $student = \App\Models\BackpackUser::create(
             [
                 "name" => "Student",
                 "email" => "student@kindyeduca.net",
                 "password" => bcrypt('student'),
-                "grade_id" => $grades->random()
+                "grade_id" => $grades->random(),
+                "verified" => 0
             ]
         );
         $student->assignRole('student');
@@ -100,28 +114,40 @@ class DatabaseSeeder extends Seeder
         Storage::disk('public')->deleteDirectory('avatar');
         Storage::disk('public')->makeDirectory('avatar');
 
-        factory(App\User::class, 100)->create();
-        $users = \App\Models\BackpackUser::all();
-        $subjects = \App\Models\Subject::all();
-        foreach ($users as $user)
-        {
-            if(!$user->hasAnyRole(['admin', 'owner', 'teacher', 'student']))
-            {
-                if(rand(0,2)>0)
-                    $user->assignRole('student');
-                else
-                    $user->assignRole('teacher');
-            }
-
-            if(!is_dir(storage_path('app/public/avatar/'.$user->id)))
-                Storage::disk('avatar')->makeDirectory($user->id);
-            $user->avatar = Faker::create()->image(storage_path('app/public/avatar/'.$user->id), 300, 300, null, false);
-
-            $user->skills()->sync($subjects->random(5));
-            $user->save();
-        }
-
-        $sessions = factory(\App\Models\Session::class, 200)->create();
+//        factory(App\User::class, 100)->create();
+//        $users = \App\Models\BackpackUser::all();
+//        $subjects = \App\Models\Subject::all();
+//        foreach ($users as $user)
+//        {
+//            if(!$user->hasAnyRole(['admin', 'owner', 'teacher', 'student']))
+//            {
+//                if(rand(0,2)>0)
+//                    $user->assignRole('student');
+//                else
+//                {
+//                    $user->assignRole('teacher');
+//
+//                    $preference = \App\Models\TeacherPreference::firstOrCreate(['teacher_id' => $user->id]);
+//                }
+//            }
+//
+//            if(!is_dir(storage_path('app/public/avatar/'.$user->id)))
+//                Storage::disk('avatar')->makeDirectory($user->id);
+//            $user->avatar = Faker::create()->image(storage_path('app/public/avatar/'.$user->id), 300, 300, null, false);
+//
+//            $user->skills()->sync($subjects->random(5));
+//            $user->save();
+//        }
+//
+//        $preferences = \App\Models\TeacherPreference::all();
+//
+//        foreach ($preferences as $preference)
+//        {
+//            $preference->grades()->sync($grades->random(3));
+//            $preference->save();
+//        }
+//
+//        $sessions = factory(\App\Models\Session::class, 200)->create();
 
     }
 }

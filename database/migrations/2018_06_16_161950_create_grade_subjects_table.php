@@ -18,8 +18,8 @@ class CreateGradeSubjectsTable extends Migration
             $table->unsignedInteger('subject_id');
 
             $table->primary(['grade_id', 'subject_id']);
-            $table->foreign('grade_id')->references('id')->on('grades');
-            $table->foreign('subject_id')->references('id')->on('subjects');
+            $table->foreign('grade_id')->references('id')->on('grades')->onDelete('cascade');
+            $table->foreign('subject_id')->references('id')->on('subjects')->onDelete('cascade');
         });
     }
 

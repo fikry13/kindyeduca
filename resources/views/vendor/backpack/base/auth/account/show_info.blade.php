@@ -37,16 +37,16 @@
 
 @section('content')
     <div class="row">
-        <div class="col-md-3">
+        <div class="col-lg-3 col-md-6 col-xs-12">
             @include('backpack::auth.account.sidemenu')
         </div>
-        <div class="col-md-6">
+        <div class="col-lg-6 col-md-8 col-xs-12">
             <div class="box padding-10">
                 <div class="box-body backpack-profile-form">
                     <div style="font-size: 120%">
                         @hasanyrole('student|teacher')
                         <strong>
-                            Description
+                            Deskripsi
                         </strong>
                         <p class="text-muted">
                             {!! $user->description==null ? '<span style="color: #ccc">Description is Empty</span>' : $user->description !!}
@@ -64,8 +64,9 @@
 
                         @hasanyrole('student|teacher')
 
+                        @hasrole('teacher')
                         <strong>
-                            Skills
+                            Keahlian
                         </strong>
                         <p class="text-muted">
                             @foreach($user->skills as $skill)
@@ -73,25 +74,27 @@
                             @endforeach
                         </p>
                         <hr>
-
+                        @endhasrole
                         <strong>
-                            Gender
+                            Jenis Kelamin
                         </strong>
                         <p class="text-muted">
                             {!! $user->gender? "<i class='fa fa-fw fa-mars'></i> Male" : "<i class='fa fa-fw fa-venus'></i> Female" !!}
                         </p>
                         <hr>
-
+                        @hasrole('student')
                         <strong>
-                            Grade
+                            Kelas
                         </strong>
+                        @if($user->grade != null)
                         <p class="text-muted">
                             <span class="label label-default" style="background-color: {{ $user->grade->school->color }}; color: #fff;">{{ $user->grade->school->name . " " . $user->grade->grade }}</span>
                         </p>
+                        @endif
                         <hr>
-
+                        @endhasrole
                         <strong>
-                            Age
+                            Umur
                         </strong>
                         <p class="text-muted">
                             {{ $user->age }}
@@ -99,7 +102,7 @@
                         <hr>
 
                         <strong>
-                            Phone
+                            Nomor Telepon
                         </strong>
                         <p class="text-muted">
                             {{ $user->phone }}
@@ -107,7 +110,7 @@
                         <hr>
 
                         <strong>
-                            Address
+                            Alamat
                         </strong>
                         <p class="text-muted">
                             {!! nl2br($user->address) !!}
@@ -115,11 +118,13 @@
                         <hr>
 
                         <strong>
-                            Location
+                            Lokasi di Peta
                         </strong>
                         <p class="text-muted">
-                        <div style="width: 500px; height: 500px;">
-                            {!! Mapper::render() !!}
+                        <div class="embed-responsive embed-responsive-16by9">
+                            <div id="map_canvas" class="embed-responsive-item">
+                                {!! Mapper::render () !!}
+                            </div>
                         </div>
                         </p>
                         <hr>
@@ -157,7 +162,7 @@
             controlText.style.lineHeight = '38px';
             controlText.style.paddingLeft = '10px';
             controlText.style.paddingRight = '10px';
-            controlText.innerHTML = 'Direction';
+            controlText.innerHTML = 'Petunjuk Arah';
             controlUI.appendChild(controlText);
 
             // Setup the click event listeners

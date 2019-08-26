@@ -13,12 +13,19 @@
     <li><a href='{{ url(config('backpack.base.route_prefix') . '/setting') }}'><i class='fa fa-cog'></i> <span>Settings</span></a></li>
     <li><a href='{{ url(config('backpack.base.route_prefix').'/log') }}'><i class='fa fa-terminal'></i> <span>Logs</span></a></li>
 @endhasrole
-@hasrole('owner')
-<li><a href="#"><i class="fa fa-dashboard"></i> <span>Owner Dashboard</span></a></li>
-@endhasrole
+@hasanyrole('owner')
+<li><a href="{{ backpack_url('dashboard') }}"><i class="fa fa-dashboard"></i> <span>Dashboard Admin</span></a></li>
+<li><a href="{{ route('backpack.page.owner.subjects.index') }}"><i class="fa fa-dashboard"></i> <span>Mata Pelajaran</span></a></li>
+<li><a href="{{ route('backpack.page.owner.users', ['role' => 'student']) }}"><i class="fa fa-dashboard"></i> <span>Siswa</span></a></li>
+<li><a href="{{ route('backpack.page.owner.users', ['role' => 'teacher']) }}"><i class="fa fa-dashboard"></i> <span>Pengajar</span></a></li>
+<li><a href="{{ route('backpack.page.owner.sessions') }}"><i class="fa fa-dashboard"></i> <span>Sesi Bimbingan</span></a></li>
+@endhasanyrole
 @hasrole('teacher')
-<li><a href="#"><i class="fa fa-dashboard"></i> <span>Teacher Dashboard</span></a></li>
+<li><a href="{{ backpack_url('dashboard') }}"><i class="fa fa-dashboard"></i> <span>Dashboard Guru</span></a></li>
+<li><a href="{{ route('backpack.page.sessions') }}"><i class="fa fa-book"></i> <span>Sesi Bimbingan</span></a></li>
+<li><a href="{{ route('backpack.page.teacher_preference') }}"><i class="fa fa-gear"></i> <span>Pengaturan Bimbingan</span></a></li>
 @endhasrole
 @hasrole('student')
-<li><a href="#"><i class="fa fa-dashboard"></i> <span>Student Dashboard</span></a></li>
+<li><a href="{{ backpack_url('dashboard') }}"><i class="fa fa-dashboard"></i> <span>Dashboard Murid</span></a></li>
+<li><a href="{{ route('backpack.page.student-sessions') }}"><i class="fa fa-book"></i> <span>Sesi Bimbingan</span></a></li>
 @endhasrole

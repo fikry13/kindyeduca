@@ -28,7 +28,7 @@ class CreateUsersTable extends Migration
             $table->string('phone')->nullable();
             $table->string('address')->nullable();
             $table->string('description')->nullable();
-            $table->decimal('distance')->nullable();
+            $table->unsignedTinyInteger('verified')->default(0);
             $table->rememberToken();
             $table->timestamps();
             $table->foreign('grade_id')->references('id')->on('grades');

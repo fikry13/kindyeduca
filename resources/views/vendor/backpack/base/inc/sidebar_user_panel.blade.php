@@ -4,6 +4,6 @@
   </a>
   <div class="pull-left info">
     <p><a href="{{ route('backpack.account.show') }}">{{ backpack_auth()->user()->name }}</a></p>
-    <small><small><a href="{{ route('backpack.account.show') }}"><span><i class="fa fa-user-circle-o"></i> {{ trans('backpack::base.my_account') }}</span></a> &nbsp;  &nbsp; <a href="{{ backpack_url('logout') }}"><i class="fa fa-sign-out"></i> <span>{{ trans('backpack::base.logout') }}</span></a></small></small>
+    <small><small><a href="{{ route('backpack.account.show') }}"><span><i class="fa fa-user-circle-o"></i> Info Akun</span></a> &nbsp;  &nbsp; <a href="{{ backpack_url('logout') }}"><i class="fa fa-sign-out"></i> <span>Keluar</span></a></small></small>
   </div>
 </div>

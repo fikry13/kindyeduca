@@ -8,7 +8,7 @@
 
 namespace App\Models;
 
-
+use App\User;
 use Hootlex\Moderation\Moderatable;
 use Illuminate\Database\Eloquent\Model;
 
@@ -18,22 +18,22 @@ class Session extends Model
 
     protected $fillable =
         [
-            'student_id','teacher_id', 'subjects_id', 'grades_id', 'gender_preference'
+            'student_id','teacher_id', 'subject_id', 'gender_preference', 'day', 'time'
         ];
 
 
     public function teacher()
     {
-        return $this->hasOne(User::class, 'teacher_id');
+        return $this->hasOne(User::class, 'id', 'teacher_id');
     }
 
     public function student()
     {
-        return $this->hasOne(User::class, 'student_id');
+        return $this->hasOne(User::class, 'id', 'student_id');
     }
 
     public function subject()
     {
-        return $this->hasOne(Subject::class);
+        return $this->hasOne(Subject::class, 'id', 'subject_id');
     }
 }

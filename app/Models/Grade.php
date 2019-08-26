@@ -14,7 +14,7 @@ use Illuminate\Database\Eloquent\Model;
 class Grade extends Model
 {
     protected $fillable =
-        ['grade'];
+        ['school_id','grade'];
 
     public function users()
     {
@@ -30,5 +30,11 @@ class Grade extends Model
     {
         return $this->belongsTo(School::class);
     }
+
+    public function inPreferences()
+    {
+        return $this->belongsToMany(TeacherPreference::class, 'grade_preferences', 'grade_id', 'preference_id');
+    }
+
 
 }

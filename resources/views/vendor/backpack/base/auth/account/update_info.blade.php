@@ -37,10 +37,10 @@
 
 @section('content')
     <div class="row">
-        <div class="col-md-3">
+        <div class="col-lg-3 col-md-6 col-xs-12">
             @include('backpack::auth.account.sidemenu')
         </div>
-        <div class="col-md-6">
+        <div class="col-lg-6 col-md-8 col-xs-12">
 
             <form class="form" action="{{ route('backpack.account.info') }}" method="post" id="update-info">
 
@@ -68,7 +68,7 @@
 
                             <div class="form-group">
                                 @php
-                                    $label = trans('backpack::base.name');
+                                    $label = 'Nama';
                                     $field = 'name';
                                 @endphp
                                 <label class="required">{{ $label }}</label>
@@ -89,7 +89,7 @@
                         @hasanyrole('student|teacher')
                         <div class="form-group">
                             @php
-                                $label = 'Gender';
+                                $label = 'Jenis Kelamin';
                                 $field = 'gender';
                                 $gender = old($field) ? old($field) : $user->$field;
                             @endphp
@@ -98,17 +98,17 @@
                                 <label>
                                     <input type="radio" name="{{ $field }}" value=1
                                            @if($gender == 1 || $gender == null) checked="" @endif>
-                                    Male
+                                    Laki-laki
                                 </label><br>
                                 <label>
                                     <input type="radio" name="{{ $field }}" value=0 @if($gender == 0) checked="" @endif>
-                                    Female
+                                    Perempuan
                                 </label>
                             </div>
                         </div>
                         <div class="form-group">
                             @php
-                                $label = 'Address';
+                                $label = 'Alamat';
                                 $field = 'address';
                             @endphp
                             <label class="required">{{ $label }}</label>
@@ -119,7 +119,7 @@
 
                         <div class="form-group">
                             @php
-                                $label = 'Age';
+                                $label = 'Umur';
                                 $field = 'age';
                                 $value = old($field) ? old($field) : $user->$field;
                             @endphp
@@ -130,7 +130,7 @@
 
                         <div class="form-group">
                             @php
-                                $label = 'Phone Number';
+                                $label = 'Nomor Telepon';
                                 $field = 'phone';
                             @endphp
                             <label class="required">{{ $label }}</label>
@@ -140,17 +140,17 @@
 
                         <div class="form-group">
                             @php
-                                $label = 'Description';
+                                $label = 'Deskripsi Diri';
                                 $field = 'description';
                             @endphp
                             <label>{{ $label }}</label>
                             <textarea class="form-control" rows="3" placeholder="Deskripsi diri" name="{{ $field }}"
                                       style="resize: none;">{{ old($field) ? old($field) : $user->$field }}</textarea>
                         </div>
-
+                        @hasrole('teacher')
                         <div class="form-group">
                             @php
-                                $label = 'Skill';
+                                $label = 'Keahlian';
                                 $field = 'skill_id[]';
                             @endphp
                             <label class="required">{{ $label }}</label>
@@ -164,10 +164,12 @@
                                 @endforeach
                             </select>
                         </div>
+                        @endhasrole
 
+                        @hasrole('student')
                         <div class="form-group">
                             @php
-                                $label = 'Grade';
+                                $label = 'Kelas';
                                 $field = 'grade_id';
                             @endphp
                             <label class="required">{{ $label }}</label>
@@ -181,36 +183,39 @@
                                 @endforeach
                             </select>
                         </div>
+                        @endhasrole
 
-                        <div class="form-group">
+                        {{--<div class="form-group">
                             @php
-                                $label = 'Distance';
+                                $label = 'Jarak Maksimum';
                                 $field = 'distance';
                                 $value = old($field) ? old($field) : $user->$field;
                             @endphp
                             <label class="required">{{ $label }}</label>
                             <input required class="form-control" type="number" name="{{ $field }}"
                                    value="{{ $value!=null ? $value : 5 }}">
-                        </div>
+                        </div>--}}
 
                         <div class="form-group">
                             @php
-                                $label = 'Location';
+                                $label = 'Lokasi di Peta';
                                 $field = 'location';
                             @endphp
                             <label class="required">{{ $label }}</label>
 
-                            <form id="form-location" action="{{ route('get-location') }}"
+                            {{--<form id="form-location" action="{{ route('get-location') }}"
                                   method="post">
                                 <div class="form-group">
                                     <input class="form-control" id="location" type="text"
                                            name="{{ $field }}"
                                            value="{{ old($field) ? old($field) : $user->$field }}">
                                 </div>
-                            </form>
+                            </form>--}}
 
-                            <div style="width: 500px; height: 500px;">
-                                {!! Mapper::render() !!}
+                            <div class="embed-responsive embed-responsive-16by9">
+                                <div id="map_canvas" class="embed-responsive-item">
+                                    {!! Mapper::render () !!}
+                                </div>
                             </div>
                             <input hidden required id="location-latitude" type="text"
                                    name="latitude"
@@ -314,6 +319,7 @@
     <script type="text/javascript">
         var skill = {{ $user->skills->pluck('id')->toJson() }};
 
+        console.log(skill);
         $(document).ready(function () {
             $('.select-skill').select2({
                 allowClear: true,
@@ -340,11 +346,10 @@
             e.preventDefault();
         });
 
-        google.maps.event.addListener(autocomplete, 'place_changed', function () {
+        /*google.maps.event.addListener(autocomplete, 'place_changed', function () {
             var place = autocomplete.getPlace();
             console.log('in:' + maps[0]);
             if (!place.geometry) {
-                o9090909090
                 $.ajax({
                     type: "POST",
                     url: form_location.attr('action'),
@@ -368,7 +373,7 @@
             input_lat.value = maps[0].markers[0].position.lat();
             input_long.value = maps[0].markers[0].position.lng();
             console.log('Change Place: ' + maps[0].markers[0].position.lat() + ', ' + maps[0].markers[0].position.lng());
-        });
+        });*/
 
         function markerDragEnd(event) {
             console.log('Marker Drag: ' + event.latLng.lat() + ', ' + event.latLng.lng());

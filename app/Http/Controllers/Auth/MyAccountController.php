@@ -28,15 +28,19 @@ class MyAccountController extends Controller
      */
     public function getAccountInfo()
     {
-        $user = $this->guard()->user();
+        $user = backpack_auth()->user();
+
+        if ($user->latitude == null && $user->longitude == null)
+        {
+            $user->latitude = -7.797068;
+            $user->longitude = 110.370529;
+            $user->save();
+        }
 
         $this->data['title'] = trans('backpack::base.my_account');
         $this->data['user'] = $user;
 
-        if($user->latitude == null && $user->longitude == null)
-            Mapper::map(-7.797068, 110.370529);
-        else
-            Mapper::map($user->latitude, $user->longitude);
+        Mapper::map($user->latitude, $user->longitude);
 
         return view('backpack::auth.account.show_info', $this->data);
     }
@@ -46,17 +50,21 @@ class MyAccountController extends Controller
      */
     public function getAccountInfoForm()
     {
-        $user = $this->guard()->user();
+        $user = backpack_auth()->user();
+
+        if ($user->latitude == null && $user->longitude == null)
+        {
+            $user->latitude = -7.797068;
+            $user->longitude = 110.370529;
+            $user->save();
+        }
 
         $this->data['title'] = trans('backpack::base.my_account');
         $this->data['user'] = $user;
         $this->data['grades'] = Grade::with('school')->get();
         $this->data['subjects'] = Subject::all();
 
-        if($user->latitude == null && $user->longitude == null)
-            Mapper::map(-7.797068, 110.370529, ['draggable' => true, 'eventDragEnd' => 'markerDragEnd(event);']);
-        else
-            Mapper::map($user->latitude, $user->longitude, ['draggable' => true, 'eventDragEnd' => 'markerDragEnd(event);']);
+        Mapper::map($user->latitude, $user->longitude, ['draggable' => true, 'eventDragEnd' => 'markerDragEnd(event);']);
 
         return view('backpack::auth.account.update_info', $this->data);
     }
@@ -66,14 +74,13 @@ class MyAccountController extends Controller
      */
     public function getAvatarForm()
     {
-        $user = $this->guard()->user();
+        $user = backpack_auth()->user();
 
         $this->data['title'] = trans('backpack::base.my_account');
         $this->data['user'] = $user;
 
         return view('backpack::auth.account.update_avatar', $this->data);
     }
-
 
     public function getLocation(Request $request)
     {
@@ -89,9 +96,9 @@ class MyAccountController extends Controller
 
     public function postAvatarForm(ChangeAvatarRequest $request)
     {
-        $user = $this->guard()->user();
+        $user = backpack_auth()->user();
 
-        Storage::disk('avatar')->delete($user->id."/".$user->avatar);
+        Storage::disk('avatar')->delete($user->id . "/" . $user->avatar);
 
         $explode = explode(',', $request->avatar);
         $format = str_replace(
@@ -106,7 +113,7 @@ class MyAccountController extends Controller
             $explode[0]
         );
 
-        $path = now()->timestamp."-".$user->id.".".$format;
+        $path = now()->timestamp . "-" . $user->id . "." . $format;
 
         $user->avatar = $path;
         $user->save();
@@ -115,7 +122,7 @@ class MyAccountController extends Controller
 
         $result = $user->update($request->except(['_token']));
 
-        Storage::disk('avatar')->put($user->id."/".$path, base64_decode($explode[1]));
+        Storage::disk('avatar')->put($user->id . "/" . $path, base64_decode($explode[1]));
 
         if ($result) {
             Alert::success(trans('backpack::base.account_updated'))->flash();
@@ -126,12 +133,12 @@ class MyAccountController extends Controller
         return redirect()->back();
     }
 
-        /**
+    /**
      * Save the modified personal information for a user.
      */
     public function postAccountInfoForm(AccountInfoRequest $request)
     {
-        $user = $this->guard()->user();
+        $user = backpack_auth()->user();
 
         $result = $user->update($request->except(['_token']));
 
@@ -172,15 +179,5 @@ class MyAccountController extends Controller
         }
 
         return redirect()->back();
-    }
-
-    /**
-     * Get the guard to be used for account manipulation.
-     *
-     * @return \Illuminate\Contracts\Auth\StatefulGuard
-     */
-    protected function guard()
-    {
-        return backpack_auth();
     }
 }

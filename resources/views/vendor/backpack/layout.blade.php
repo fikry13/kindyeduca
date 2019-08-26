@@ -2,6 +2,8 @@
 <html lang="{{ app()->getLocale() }}">
 <head>
     @include('backpack::inc.head')
+<link rel="shortcut icon" href="{{ url('favicon.ico') }}" type="image/x-icon">
+<link rel="icon" href="{{ url('favicon.ico') }}" type="image/x-icon">
 </head>
 <body class="hold-transition {{ config('backpack.base.skin') }} sidebar-mini">
 	<script type="text/javascript">
